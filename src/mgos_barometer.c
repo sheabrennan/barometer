@@ -107,6 +107,11 @@ bool mgos_barometer_has_barometer(struct mgos_barometer *sensor) {
   return (sensor->capabilities & MGOS_BAROMETER_CAP_BAROMETER);
 }
 
+bool mgos_barometer_has_hygrometer(struct mgos_barometer *sensor) {
+  if (!sensor) return false;
+  return (sensor->capabilities & MGOS_BAROMETER_CAP_HYGROMETER);
+}
+
 bool mgos_barometer_read(struct mgos_barometer *sensor) {
   double start = mg_time();
   bool ret = false;
@@ -143,6 +148,13 @@ bool mgos_barometer_get_temperature(struct mgos_barometer *sensor, float *t) {
   return true;
 }
 
+bool mgos_barometer_get_humidity(struct mgos_barometer *sensor, float *h) {
+  if (!mgos_barometer_has_hygrometer(sensor)) return false;
+  if (!mgos_barometer_read(sensor)) return false;
+  if (*h) *h=sensor->humidity;
+  return true;
+}
+
 bool mgos_barometer_set_cache_ttl(struct mgos_barometer *sensor, uint16_t msecs) {
   if (!sensor) return false;
   sensor->cache_ttl_ms = msecs;
@@ -157,6 +169,21 @@ bool mgos_barometer_get_stats(struct mgos_barometer *sensor, struct mgos_baromet
   memcpy((void *)stats, (const void *)&sensor->stats, sizeof(struct mgos_barometer_stats));
   return true;
 }
+
+const char *mgos_barometer_get_device_name(struct mgos_barometer *sensor) {
+  if (!sensor) return "Unknown";
+  switch (sensor->type) {
+  case BARO_MPL115: return "MPL115";
+  case BARO_MPL3115: return "MPL3115";
+  case BARO_BME280:
+    if (mgos_barometer_has_hygrometer(sensor))
+      return "BME280";
+    else
+      return "BMP280";
+  default: return "UNKNOWN";
+  }
+}
+
 
 
 bool mgos_barometer_init(void) {

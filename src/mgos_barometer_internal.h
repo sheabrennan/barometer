@@ -50,6 +50,7 @@ struct mgos_barometer {
 
   float pressure; // in Pascals
   float temperature; // in Celcius
+  float humidity; // in % Relative Humidity
 
   struct mgos_barometer_stats stats;
 };

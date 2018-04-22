@@ -43,8 +43,10 @@ struct mgos_barometer_stats {
 
 struct mgos_barometer *mgos_barometer_create_i2c(struct mgos_i2c *i2c, uint8_t i2caddr, enum mgos_barometer_type type);
 void mgos_barometer_destroy(struct mgos_barometer **sensor);
+
 bool mgos_barometer_has_thermometer(struct mgos_barometer *sensor);
 bool mgos_barometer_has_barometer(struct mgos_barometer *sensor);
+bool mgos_barometer_has_hygrometer(struct mgos_barometer *sensor);
 
 /* Set cache TTL -- will limit reads and return cached data. Set msecs=0 to turn off */
 bool mgos_barometer_set_cache_ttl(struct mgos_barometer *sensor, uint16_t msecs);
@@ -57,6 +59,12 @@ bool mgos_barometer_get_pressure(struct mgos_barometer *sensor, float *p);
 
 /* Return temperature data in units of Celcius */
 bool mgos_barometer_get_temperature(struct mgos_barometer *sensor, float *t);
+
+/* Return humidity data in units of % Relative Humidity */
+bool mgos_barometer_get_humidity(struct mgos_barometer *sensor, float *h);
+
+/* String representation of the barometer type, guaranteed to be le 10 characters. */
+const char *mgos_barometer_get_device_name(struct mgos_barometer *sensor);
 
 /*
  * Return statistics on the sensor.
