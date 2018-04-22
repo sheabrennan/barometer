@@ -14,6 +14,7 @@ bool mgos_barometer_mpl3115_detect(struct mgos_barometer *dev) {
   if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_WHOAMI)) < 0) {
     return false;
   }
+  LOG(LL_DEBUG, ("whoami=0x%02x", val));
 
   if (val != 0xC4) {
     return false;
@@ -29,22 +30,26 @@ bool mgos_barometer_mpl3115_create(struct mgos_barometer *dev) {
 
 
   // Reset
+  LOG(LL_DEBUG, ("Reset"));
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL1, 0x04)) {
     return false;
   }
   mgos_usleep(20000);
 
   // Set sample period to 1sec ST[3:0], period 2^ST seconds
+  LOG(LL_DEBUG, ("Sample Period"));
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL2, 0x00)) {
     return false;
   }
 
   // Set Barometer Mode, OS[2:0], oversampling 2^OS times, continuous sampling
+  LOG(LL_DEBUG, ("Baro Mode"));
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL1, 0x39)) {
     return false;
   }
 
   // Set event flags for temp+pressure
+  LOG(LL_DEBUG, ("Event Flags"));
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_PT_DATA, 0x07)) {
     return false;
   }
@@ -62,10 +67,12 @@ bool mgos_barometer_mpl3115_read(struct mgos_barometer *dev) {
 
   int val = 0;
   uint8_t retries=100;
+  LOG(LL_DEBUG, ("Data Ready"));
   if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_STATUS)) < 0)
     return false;
 
   while (!(val & 0x08) && retries>0) { // Data Ready
+    LOG(LL_DEBUG, ("Data Ready"));
     if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_STATUS)) < 0) {
       return false;
     }
@@ -82,6 +89,7 @@ bool mgos_barometer_mpl3115_read(struct mgos_barometer *dev) {
   int16_t  temperature;
   uint8_t  data[5];
 
+  LOG(LL_DEBUG, ("Read Data"));
   if (!mgos_i2c_read_reg_n(dev->i2c, dev->i2caddr, MPL3115_REG_PRESSURE_MSB, 5, data)) {
     return false;
   }
