@@ -163,7 +163,7 @@ bool mgos_barometer_ms5611_read(struct mgos_barometer *dev) {
   dev->pressure=((((int64_t)Padc * sens) >> 21) - off) >> 15;
   dev->temperature=(float)temp / 100.0;
 
-  LOG(LL_DEBUG, ("P=%.2f T=%.2f", dev->pressure, dev->temperature));
+//  LOG(LL_DEBUG, ("P=%.2f T=%.2f", dev->pressure, dev->temperature));
 
   return true;
 }
