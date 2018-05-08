@@ -137,9 +137,10 @@ bool mgos_barometer_ms5611_read(struct mgos_barometer *dev) {
     LOG(LL_ERROR, ("Could not read pressure ADC"));
     return false;
   }
+  LOG(LL_DEBUG, ("Padc=%u Tadc=%u", Padc, Tadc));
 
   // Convert ADC to values -- TODO(pim) check this math
-  uint32_t press;
+//  uint32_t press;
   int64_t temp;
   int64_t delt;
   int64_t dT = (int64_t)Tadc - ((uint64_t)ms5611_data->calib[5] * 256);
@@ -158,11 +159,10 @@ bool mgos_barometer_ms5611_read(struct mgos_barometer *dev) {
       off -= 7 * delt;
       sens -= (11 * delt) >> 1;
     }
-  temp -= ((dT * dT) >> 31);
+    temp -= ((dT * dT) >> 31);
   }
-  press = ((((int64_t)Padc * sens) >> 21) - off) >> 15;
 
-  dev->pressure=(float)press;
+  dev->pressure=((((int64_t)Padc * sens) >> 21) - off) >> 15;
   dev->temperature=(float)temp / 100.0;
 
   LOG(LL_DEBUG, ("P=%.2f T=%.2f", dev->pressure, dev->temperature));
