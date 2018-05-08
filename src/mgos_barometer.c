@@ -19,6 +19,7 @@
 #include "mgos_barometer_mpl115.h"
 #include "mgos_barometer_mpl3115.h"
 #include "mgos_barometer_bme280.h"
+#include "mgos_barometer_ms5611.h"
 
 // Private functions follow
 // Private functions end
@@ -54,6 +55,11 @@ struct mgos_barometer *mgos_barometer_create_i2c(struct mgos_i2c *i2c, uint8_t i
       sensor->create = mgos_barometer_bme280_create;
       sensor->read = mgos_barometer_bme280_read;
       sensor->destroy = mgos_barometer_bme280_destroy;
+      break;
+    case BARO_MS5611:
+      sensor->create = mgos_barometer_ms5611_create;
+      sensor->read = mgos_barometer_ms5611_read;
+      sensor->destroy = mgos_barometer_ms5611_destroy;
       break;
     default:
       LOG(LL_ERROR, ("Unknown mgos_barometer_type %d", type));
@@ -180,6 +186,7 @@ const char *mgos_barometer_get_device_name(struct mgos_barometer *sensor) {
       return "BME280";
     else
       return "BMP280";
+  case BARO_MS5611: return "MS5611";
   default: return "UNKNOWN";
   }
 }

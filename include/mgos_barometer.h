@@ -27,7 +27,8 @@ enum mgos_barometer_type {
   BARO_NONE = 0,
   BARO_MPL115,
   BARO_MPL3115,
-  BARO_BME280     // Also BMP280
+  BARO_BME280,    // Also BMP280
+  BARO_MS5611
 };
 
 struct mgos_barometer;
