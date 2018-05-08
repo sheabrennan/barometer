@@ -65,8 +65,7 @@ static bool ms5611_conv(struct mgos_barometer *dev, uint8_t cmd, uint32_t *conv)
   if (!mgos_i2c_read_reg_n(dev->i2c, dev->i2caddr, MS5611_CMD_ADC_READ, 3, data))
     return false;
 
-  if (*conv)
-    *conv = (((uint32_t)data[0]) << 16) | ((uint32_t)(data[1]) << 8) | data[2];
+  *conv = (((uint32_t)data[0]) << 16) | ((uint32_t)(data[1]) << 8) | data[2];
   return true;
 }
 
@@ -137,10 +136,9 @@ bool mgos_barometer_ms5611_read(struct mgos_barometer *dev) {
     LOG(LL_ERROR, ("Could not read pressure ADC"));
     return false;
   }
-  LOG(LL_DEBUG, ("Padc=%u Tadc=%u", Padc, Tadc));
+//  LOG(LL_DEBUG, ("Padc=%u Tadc=%u", Padc, Tadc));
 
-  // Convert ADC to values -- TODO(pim) check this math
-//  uint32_t press;
+  // Convert ADC to values
   int64_t temp;
   int64_t delt;
   int64_t dT = (int64_t)Tadc - ((uint64_t)ms5611_data->calib[5] * 256);
