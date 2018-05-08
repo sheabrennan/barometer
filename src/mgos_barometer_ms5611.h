@@ -19,26 +19,26 @@
 #include "mgos.h"
 #include "mgos_barometer_internal.h"
 
-#define MS5611_PROM_SIZE 8
+#define MS5611_PROM_SIZE       8
 
-#define MS5611_CMD_RESET           (0x1E) // ADC reset command
-#define MS5611_CMD_ADC_READ        (0x00) // ADC read command
-#define MS5611_CMD_ADC_CONV        (0x40) // ADC conversion command
-#define MS5611_CMD_ADC_D1          (0x00) // ADC D1 conversion
-#define MS5611_CMD_ADC_D2          (0x10) // ADC D2 conversion
-#define MS5611_CMD_ADC_256         (0x00) // ADC OSR=256
-#define MS5611_CMD_ADC_512         (0x02) // ADC OSR=512
-#define MS5611_CMD_ADC_1024        (0x04) // ADC OSR=1024
-#define MS5611_CMD_ADC_2048        (0x06) // ADC OSR=2048
-#define MS5611_CMD_ADC_4096        (0x08) // ADC OSR=4096
-#define MS5611_CMD_PROM_RD         (0xA0) // Prom read command
+#define MS5611_CMD_RESET       (0x1E)     // ADC reset command
+#define MS5611_CMD_ADC_READ    (0x00)     // ADC read command
+#define MS5611_CMD_ADC_CONV    (0x40)     // ADC conversion command
+#define MS5611_CMD_ADC_D1      (0x00)     // ADC D1 conversion
+#define MS5611_CMD_ADC_D2      (0x10)     // ADC D2 conversion
+#define MS5611_CMD_ADC_256     (0x00)     // ADC OSR=256
+#define MS5611_CMD_ADC_512     (0x02)     // ADC OSR=512
+#define MS5611_CMD_ADC_1024    (0x04)     // ADC OSR=1024
+#define MS5611_CMD_ADC_2048    (0x06)     // ADC OSR=2048
+#define MS5611_CMD_ADC_4096    (0x08)     // ADC OSR=4096
+#define MS5611_CMD_PROM_RD     (0xA0)     // Prom read command
 
 struct mgos_barometer_ms5611_data {
   // Calibration data:
   // 16 bits -- factory code
   // 6x 16 bits of calibration (c1..c6)
   // last 16 bits -- crc4 of the ROM in LSB4, other 12 bits are ignored
-  uint16_t calib[MS5611_PROM_SIZE]; 
+  uint16_t calib[MS5611_PROM_SIZE];
 };
 
 bool mgos_barometer_ms5611_create(struct mgos_barometer *dev);

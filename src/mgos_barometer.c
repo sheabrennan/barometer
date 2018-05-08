@@ -37,36 +37,40 @@ struct mgos_barometer *mgos_barometer_create_i2c(struct mgos_i2c *i2c, uint8_t i
     return NULL;
   }
   memset(sensor, 0, sizeof(struct mgos_barometer));
-  sensor->i2c=i2c;
-  sensor->i2caddr=i2caddr;
-  switch(type) {
-    case BARO_MPL115:
-      sensor->create = mgos_barometer_mpl115_create;
-      sensor->read = mgos_barometer_mpl115_read;
-      sensor->destroy = mgos_barometer_mpl115_destroy;
-      break;
-    case BARO_MPL3115:
-      sensor->detect = mgos_barometer_mpl3115_detect;
-      sensor->create = mgos_barometer_mpl3115_create;
-      sensor->read = mgos_barometer_mpl3115_read;
-      break;
-    case BARO_BME280:
-      sensor->detect = mgos_barometer_bme280_detect;
-      sensor->create = mgos_barometer_bme280_create;
-      sensor->read = mgos_barometer_bme280_read;
-      sensor->destroy = mgos_barometer_bme280_destroy;
-      break;
-    case BARO_MS5611:
-      sensor->create = mgos_barometer_ms5611_create;
-      sensor->read = mgos_barometer_ms5611_read;
-      sensor->destroy = mgos_barometer_ms5611_destroy;
-      break;
-    default:
-      LOG(LL_ERROR, ("Unknown mgos_barometer_type %d", type));
-      free(sensor);
-      return NULL;
+  sensor->i2c     = i2c;
+  sensor->i2caddr = i2caddr;
+  switch (type) {
+  case BARO_MPL115:
+    sensor->create  = mgos_barometer_mpl115_create;
+    sensor->read    = mgos_barometer_mpl115_read;
+    sensor->destroy = mgos_barometer_mpl115_destroy;
+    break;
+
+  case BARO_MPL3115:
+    sensor->detect = mgos_barometer_mpl3115_detect;
+    sensor->create = mgos_barometer_mpl3115_create;
+    sensor->read   = mgos_barometer_mpl3115_read;
+    break;
+
+  case BARO_BME280:
+    sensor->detect  = mgos_barometer_bme280_detect;
+    sensor->create  = mgos_barometer_bme280_create;
+    sensor->read    = mgos_barometer_bme280_read;
+    sensor->destroy = mgos_barometer_bme280_destroy;
+    break;
+
+  case BARO_MS5611:
+    sensor->create  = mgos_barometer_ms5611_create;
+    sensor->read    = mgos_barometer_ms5611_read;
+    sensor->destroy = mgos_barometer_ms5611_destroy;
+    break;
+
+  default:
+    LOG(LL_ERROR, ("Unknown mgos_barometer_type %d", type));
+    free(sensor);
+    return NULL;
   }
-  sensor->type=type;
+  sensor->type = type;
   if (sensor->detect) {
     if (!sensor->detect(sensor)) {
       LOG(LL_ERROR, ("Could not detect mgos_barometer_type %d at I2C 0x%02x", type, i2caddr));
@@ -97,36 +101,48 @@ void mgos_barometer_destroy(struct mgos_barometer **sensor) {
   if ((*sensor)->destroy && !(*sensor)->destroy(*sensor)) {
     LOG(LL_ERROR, ("Could not destroy mgos_barometer_type %d at I2C 0x%02x", (*sensor)->type, (*sensor)->i2caddr));
   }
-  if ((*sensor)->user_data) free ((*sensor)->user_data);
+  if ((*sensor)->user_data) {
+    free((*sensor)->user_data);
+  }
   free(*sensor);
   *sensor = NULL;
   return;
 }
 
 bool mgos_barometer_has_thermometer(struct mgos_barometer *sensor) {
-  if (!sensor) return false;
-  return (sensor->capabilities & MGOS_BAROMETER_CAP_THERMOMETER);
+  if (!sensor) {
+    return false;
+  }
+  return sensor->capabilities & MGOS_BAROMETER_CAP_THERMOMETER;
 }
 
 bool mgos_barometer_has_barometer(struct mgos_barometer *sensor) {
-  if (!sensor) return false;
-  return (sensor->capabilities & MGOS_BAROMETER_CAP_BAROMETER);
+  if (!sensor) {
+    return false;
+  }
+  return sensor->capabilities & MGOS_BAROMETER_CAP_BAROMETER;
 }
 
 bool mgos_barometer_has_hygrometer(struct mgos_barometer *sensor) {
-  if (!sensor) return false;
-  return (sensor->capabilities & MGOS_BAROMETER_CAP_HYGROMETER);
+  if (!sensor) {
+    return false;
+  }
+  return sensor->capabilities & MGOS_BAROMETER_CAP_HYGROMETER;
 }
 
 bool mgos_barometer_read(struct mgos_barometer *sensor) {
   double start = mg_time();
-  bool ret = false;
+  bool   ret   = false;
 
-  if (!sensor) return false;
-  if (!sensor->read) return false;
+  if (!sensor) {
+    return false;
+  }
+  if (!sensor->read) {
+    return false;
+  }
 
   sensor->stats.read++;
-  if (1000*(start - sensor->stats.last_read_time) < sensor->cache_ttl_ms) {
+  if (1000 * (start - sensor->stats.last_read_time) < sensor->cache_ttl_ms) {
     sensor->stats.read_success_cached++;
     return true;
   }
@@ -141,28 +157,48 @@ bool mgos_barometer_read(struct mgos_barometer *sensor) {
 }
 
 bool mgos_barometer_get_pressure(struct mgos_barometer *sensor, float *p) {
-  if (!mgos_barometer_has_barometer(sensor)) return false;
-  if (!mgos_barometer_read(sensor)) return false;
-  if (*p) *p=sensor->pressure;
+  if (!mgos_barometer_has_barometer(sensor)) {
+    return false;
+  }
+  if (!mgos_barometer_read(sensor)) {
+    return false;
+  }
+  if (*p) {
+    *p = sensor->pressure;
+  }
   return true;
 }
 
 bool mgos_barometer_get_temperature(struct mgos_barometer *sensor, float *t) {
-  if (!mgos_barometer_has_thermometer(sensor)) return false;
-  if (!mgos_barometer_read(sensor)) return false;
-  if (*t) *t=sensor->temperature;
+  if (!mgos_barometer_has_thermometer(sensor)) {
+    return false;
+  }
+  if (!mgos_barometer_read(sensor)) {
+    return false;
+  }
+  if (*t) {
+    *t = sensor->temperature;
+  }
   return true;
 }
 
 bool mgos_barometer_get_humidity(struct mgos_barometer *sensor, float *h) {
-  if (!mgos_barometer_has_hygrometer(sensor)) return false;
-  if (!mgos_barometer_read(sensor)) return false;
-  if (*h) *h=sensor->humidity;
+  if (!mgos_barometer_has_hygrometer(sensor)) {
+    return false;
+  }
+  if (!mgos_barometer_read(sensor)) {
+    return false;
+  }
+  if (*h) {
+    *h = sensor->humidity;
+  }
   return true;
 }
 
 bool mgos_barometer_set_cache_ttl(struct mgos_barometer *sensor, uint16_t msecs) {
-  if (!sensor) return false;
+  if (!sensor) {
+    return false;
+  }
   sensor->cache_ttl_ms = msecs;
   return true;
 }
@@ -177,21 +213,26 @@ bool mgos_barometer_get_stats(struct mgos_barometer *sensor, struct mgos_baromet
 }
 
 const char *mgos_barometer_get_device_name(struct mgos_barometer *sensor) {
-  if (!sensor) return "Unknown";
+  if (!sensor) {
+    return "Unknown";
+  }
   switch (sensor->type) {
   case BARO_MPL115: return "MPL115";
+
   case BARO_MPL3115: return "MPL3115";
+
   case BARO_BME280:
-    if (mgos_barometer_has_hygrometer(sensor))
+    if (mgos_barometer_has_hygrometer(sensor)) {
       return "BME280";
-    else
+    } else{
       return "BMP280";
+    }
+
   case BARO_MS5611: return "MS5611";
+
   default: return "UNKNOWN";
   }
 }
-
-
 
 bool mgos_barometer_init(void) {
   return true;

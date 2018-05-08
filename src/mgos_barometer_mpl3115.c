@@ -70,8 +70,8 @@ bool mgos_barometer_mpl3115_create(struct mgos_barometer *dev) {
     return false;
   }
 
-  dev->capabilities|=MGOS_BAROMETER_CAP_BAROMETER;
-  dev->capabilities|=MGOS_BAROMETER_CAP_THERMOMETER;
+  dev->capabilities |= MGOS_BAROMETER_CAP_BAROMETER;
+  dev->capabilities |= MGOS_BAROMETER_CAP_THERMOMETER;
 
   return true;
 }
@@ -81,13 +81,14 @@ bool mgos_barometer_mpl3115_read(struct mgos_barometer *dev) {
     return false;
   }
 
-  int val = 0;
-  uint8_t retries=100;
+  int     val     = 0;
+  uint8_t retries = 100;
   LOG(LL_DEBUG, ("Data Ready"));
-  if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_STATUS)) < 0)
+  if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_STATUS)) < 0) {
     return false;
+  }
 
-  while (!(val & 0x08) && retries>0) { // Data Ready
+  while (!(val & 0x08) && retries > 0) { // Data Ready
     LOG(LL_DEBUG, ("Data Ready"));
     if ((val = mgos_i2c_read_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_STATUS)) < 0) {
       return false;
@@ -96,7 +97,7 @@ bool mgos_barometer_mpl3115_read(struct mgos_barometer *dev) {
 //    LOG(LL_DEBUG, ("Snoozing, retries=%d", retries));
     retries--;
   }
-  if (retries==0) {
+  if (retries == 0) {
     LOG(LL_ERROR, ("Timed out waiting for data ready"));
     return false;
   }
