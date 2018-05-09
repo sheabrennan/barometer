@@ -70,17 +70,20 @@ bool mgos_barometer_bme280_create(struct mgos_barometer *dev) {
 
   // Read calibration data
   if (!mgos_i2c_read_reg_n(dev->i2c, dev->i2caddr, BME280_REG_TEMPERATURE_CALIB_DIG_T1_LSB, 24, (uint8_t *)bme280_data)) {
+    free(dev->user_data);
     return false;
   }
 
   // SPI | 0.5ms period | 16X IIR filter
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, BME280_REG_CONFIG, 0x00 | BME280_STANDBY_500us << 2 | BME280_FILTER_16X << 5)) {
+    free(dev->user_data);
     return false;
   }
   mgos_usleep(10000);
 
   // Mode | Pressure OS | Temp OS
   if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, BME280_REG_CTRL_MEAS, BME280_MODE_NORMAL | BME280_OVERSAMP_16X << 2 | BME280_OVERSAMP_2X << 5)) {
+    free(dev->user_data);
     return false;
   }
 

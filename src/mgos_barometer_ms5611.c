@@ -106,12 +106,14 @@ bool mgos_barometer_ms5611_create(struct mgos_barometer *dev) {
   for (int i = 0; i < MS5611_PROM_SIZE; i++) {
     int val = mgos_i2c_read_reg_w(dev->i2c, dev->i2caddr, MS5611_CMD_PROM_RD + i * 2);
     if (val < 0) {
+      free(dev->user_data);
       return false;
     }
     ms5611_data->calib[i] = val;
   }
   if (!ms5611_crc4(ms5611_data->calib)) {
     LOG(LL_ERROR, ("CRC4 failure on PROM data"));
+    free(dev->user_data);
     return false;
   }
 
