@@ -212,7 +212,7 @@ bool mgos_barometer_get_stats(struct mgos_barometer *sensor, struct mgos_baromet
   return true;
 }
 
-const char *mgos_barometer_get_device_name(struct mgos_barometer *sensor) {
+const char *mgos_barometer_get_name(struct mgos_barometer *sensor) {
   if (!sensor) {
     return "Unknown";
   }
