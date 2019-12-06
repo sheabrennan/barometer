@@ -64,29 +64,4 @@ let barometer = {
     }
   },
 
-  create: function(pin, type) {
-    let obj = Object.create(DHT._proto);
-    obj.dht = DHT._crt(pin, type);
-    return obj;
-  },
-
-  _proto: {
-    // **`mydht.close()`**
-    // Close DHT handle. Return value: none.
-    close: function() {
-      return DHT._cls(this.dht);
-    },
-
-    // **`mydht.getTemp()`**
-    // Return temperature in degrees C or 'NaN' in case of a failure.
-    getTemp: function() {
-      return DHT._gt(this.dht);
-    },
-
-    // **`mydht.getHumidity()`**
-    // Return humidity in RH% or 'NaN' in case of a failure.
-    getHumidity: function() {
-      return DHT._gh(this.dht);
-    }
-  }
 };
