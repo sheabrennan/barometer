@@ -19,7 +19,7 @@ let barometer = {
 
   ADDRESSES: [null, null, 0x60, null, null],
 
-  create: function(type) {
+  create: function(i2cRef,type) {
     let obj = Object.create(barometer._proto);
     obj.barometer = barometer._crt(i2cRef, barometer.ADDRESSES[type], type);
   },
@@ -62,6 +62,5 @@ let barometer = {
 
       }
     }
-  },
-
+  }
 };
