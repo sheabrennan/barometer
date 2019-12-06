@@ -234,6 +234,23 @@ const char *mgos_barometer_get_name(struct mgos_barometer *sensor) {
   }
 }
 
+int mgos_barometer_return_capabilities(struct mgos_barometer *sensor){
+  return sensor->capabilities;
+}
+
+float mgos_barometer_return_spec(struct mgos_barometer *sensor, uint8_t cap){
+  if(cap & MGOS_BAROMETER_CAP_HYGROMETER){
+    return sensor->humidity;
+  }
+  if(cap & MGOS_BAROMETER_CAP_THERMOMETER){
+    return sensor->temperature;
+  }
+  if(cap & MGOS_BAROMETER_CAP_BAROMETER){
+    return sensor->pressure;
+  }
+  return 0.0;
+}
+
 bool mgos_barometer_init(void) {
   return true;
 }
