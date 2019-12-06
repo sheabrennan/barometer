@@ -17,6 +17,9 @@ sources:
 includes:
   - include
 
+filesystem:
+  - fs
+
 config_schema:
 
 libs:
