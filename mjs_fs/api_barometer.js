@@ -15,7 +15,7 @@ let barometer = {
   BARO_BME280: 3, // Also BMP280
   BARO_MS5611: 4,
 
-  ADDRESSES: [null, null, 0x96, null, null],
+  ADDRESSES: [null, null, 0x60, null, null],
 
   create: function(i2cRef,type) {
     let obj = Object.create(barometer._proto);

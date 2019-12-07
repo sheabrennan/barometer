@@ -47,16 +47,17 @@ bool mgos_barometer_mpl3115_create(struct mgos_barometer *dev) {
 
   // Reset
   LOG(LL_DEBUG, ("Reset"));
-  if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL1, 0x04)) {
+  if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL1, 0x02)) {
     return false;
   }
   mgos_usleep(20000);
 
   // Set sample period to 1sec ST[3:0], period 2^ST seconds
+  //this isn't right
   LOG(LL_DEBUG, ("Sample Period"));
-  if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL2, 0x00)) {
-    return false;
-  }
+  //if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL2, 0x00)) {
+  //  return false;
+  //}
 
   // Set Barometer Mode, OS[2:0], oversampling 2^OS times, continuous sampling
   LOG(LL_DEBUG, ("Baro Mode"));
