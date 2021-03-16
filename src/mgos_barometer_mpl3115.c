@@ -55,7 +55,7 @@ bool mgos_barometer_mpl3115_create(struct mgos_barometer *dev) {
   // Set sample period to 1sec ST[3:0], period 2^ST seconds
   //this isn't right
   LOG(LL_DEBUG, ("Sample Period"));
-  if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL2, 0x38)) {
+  if (!mgos_i2c_write_reg_b(dev->i2c, dev->i2caddr, MPL3115_REG_CTRL2, 0x00)) {
     return false;
   }
 
